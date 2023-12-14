@@ -324,16 +324,22 @@ func TestDNSFilter_CheckHost_hostsContainer(t *testing.T) {
 		wantRules: nil,
 		wantResps: nil,
 	}, {
-		name:      "v4_mismatch",
-		host:      "v4.host.example",
-		dtyp:      dns.TypeAAAA,
-		wantRules: nil,
+		name: "v4_mismatch",
+		host: "v4.host.example",
+		dtyp: dns.TypeAAAA,
+		wantRules: []*ResultRule{{
+			Text:         fmt.Sprintf("%s v4.host.example", addrv4),
+			FilterListID: SysHostsListID,
+		}},
 		wantResps: nil,
 	}, {
-		name:      "v6_mismatch",
-		host:      "v6.host.example",
-		dtyp:      dns.TypeA,
-		wantRules: nil,
+		name: "v6_mismatch",
+		host: "v6.host.example",
+		dtyp: dns.TypeA,
+		wantRules: []*ResultRule{{
+			Text:         fmt.Sprintf("%s v6.host.example", addrv6),
+			FilterListID: SysHostsListID,
+		}},
 		wantResps: nil,
 	}, {
 		name:      "wrong_ptr",

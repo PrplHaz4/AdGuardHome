@@ -630,8 +630,8 @@ func (d *DNSFilter) matchSysHosts(
 		return Result{}, nil
 	}
 
-	vals, rs := hostsRewrites(qtype, host, d.conf.EtcHosts)
-	if len(vals) > 0 {
+	vals, rs, matched := hostsRewrites(qtype, host, d.conf.EtcHosts)
+	if matched {
 		res.DNSRewriteResult = &DNSRewriteResult{
 			Response: DNSRewriteResultResponse{
 				qtype: vals,
@@ -650,7 +650,7 @@ func hostsRewrites(
 	qtype uint16,
 	host string,
 	hs hostsfile.Storage,
-) (vals []rules.RRValue, rs []*ResultRule) {
+) (vals []rules.RRValue, rls []*ResultRule, matched bool) {
 	var isValidProto func(netip.Addr) (ok bool)
 	switch qtype {
 	case dns.TypeA:
@@ -663,37 +663,41 @@ func hostsRewrites(
 		if err != nil {
 			log.Debug("filtering: failed to parse PTR record %q: %s", host, err)
 
-			return nil, nil
+			return nil, nil, false
 		}
 
 		addr, _ := netip.AddrFromSlice(ip)
 
 		for _, name := range hs.ByAddr(addr) {
+			matched = true
+
 			vals = append(vals, name)
-			rs = append(rs, &ResultRule{
+			rls = append(rls, &ResultRule{
 				Text:         fmt.Sprintf("%s %s", addr, name),
 				FilterListID: SysHostsListID,
 			})
 		}
 
-		return vals, rs
+		return vals, rls, matched
 	default:
 		log.Debug("filtering: unsupported qtype %d", qtype)
 
-		return nil, nil
+		return nil, nil, false
 	}
 
 	for _, addr := range hs.ByName(host) {
+		matched = true
+
 		if isValidProto(addr) {
 			vals = append(vals, addr)
-			rs = append(rs, &ResultRule{
-				Text:         fmt.Sprintf("%s %s", addr, host),
-				FilterListID: SysHostsListID,
-			})
 		}
+		rls = append(rls, &ResultRule{
+			Text:         fmt.Sprintf("%s %s", addr, host),
+			FilterListID: SysHostsListID,
+		})
 	}
 
-	return vals, rs
+	return vals, rls, matched
 }
 
 // processRewrites performs filtering based on the legacy rewrite records.
