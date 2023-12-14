@@ -9,6 +9,7 @@ require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/ameshkov/dnscrypt/v2 v2.2.7
 	github.com/bluele/gcache v0.0.2
+	github.com/c2h5oh/datasize v0.0.0-20220606134207-859f65c6625b
 	github.com/digineo/go-ipset/v2 v2.2.1
 	github.com/dimfeld/httptreemux/v5 v5.5.0
 	github.com/fsnotify/fsnotify v1.7.0
@@ -64,5 +65,3 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.16.0 // indirect
 )
-
-require github.com/c2h5oh/datasize v0.0.0-20220606134207-859f65c6625b
