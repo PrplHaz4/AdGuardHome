@@ -25,18 +25,17 @@ type URLFilterID = int
 // UID is the type for the unique IDs of filtering-rule lists.
 type UID uuid.UUID
 
-// NewFilterUID returns a new filtering-rule list UID. Any error returned is an
-// error from the cryptographic randomness reader.
-func NewFilterUID() (uid UID, err error) {
+// NewUID returns a new filtering-rule list UID. Any error returned is an error
+// from the cryptographic randomness reader.
+func NewUID() (uid UID, err error) {
 	uuidv7, err := uuid.NewV7()
 
 	return UID(uuidv7), err
 }
 
-// MustNewFilterUID is a wrapper around [NewFilterUID] that panics if there is
-// an error.
-func MustNewFilterUID() (uid UID) {
-	uid, err := NewFilterUID()
+// MustNewUID is a wrapper around [NewUID] that panics if there is an error.
+func MustNewUID() (uid UID) {
+	uid, err := NewUID()
 	if err != nil {
 		panic(fmt.Errorf("unexpected uuidv7 error: %w", err))
 	}

@@ -18,7 +18,7 @@ import (
 
 func TestFilter_Refresh(t *testing.T) {
 	cacheDir := t.TempDir()
-	uid := rulelist.MustNewFilterUID()
+	uid := rulelist.MustNewUID()
 
 	initialFile := filepath.Join(cacheDir, "initial.txt")
 	initialData := []byte(
